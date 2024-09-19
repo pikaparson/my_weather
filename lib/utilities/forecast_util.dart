@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
 
-class Util{
-  static String getFormatedDate(DateTime dateTime) {
-    return DateFormat('EEEE // MMM d y').format(dateTime);
+class Util {
+  static String getFormattedDate(DateTime dateTime) {
+    return DateFormat('EEE, MMM d, y').format(dateTime); // Tue, May 5, 2020
   }
 
   static getItem(IconData iconData, int value, String units) {
     return Column(
       children: <Widget>[
-        Icon(iconData, color: Colors.black87, size: 18),
-        SizedBox(height: 10,),
+        Icon(iconData, color: Colors.black87, size: 28.0),
+        const SizedBox(height: 10.0),
         Text(
           '$value',
-          style: TextStyle(
-              fontSize: 20,
-              color: Colors.black87),
+          style: const TextStyle(fontSize: 20.0, color: Colors.black87),
         ),
-        SizedBox(height: 10,),
+        const SizedBox(height: 10.0),
         Text(
-            '$units',
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.black87)
+          units,
+          style: const TextStyle(fontSize: 15.0, color: Colors.black87),
         ),
       ],
     );

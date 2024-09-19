@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:my_weather/api/weather_api.dart';
-import 'package:my_weather/models/weather_forecast_daily.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:my_weather/screens/city_screen.dart';
-import 'package:my_weather/widgets/bottom_list_view.dart';
-import 'package:my_weather/widgets/city_view.dart';
-import 'package:my_weather/widgets/detail_view.dart';
 
+import '../api/weather_api.dart';
+import '../models/weather_forecast_daily.dart';
+import '../widgets/bottom_list_view.dart';
+import '../widgets/city_view.dart';
+import '../widgets/detail_view.dart';
 import '../widgets/temp_view.dart';
+import 'city_screen.dart';
 
 class WeatherForecastScreen extends StatefulWidget {
-  const WeatherForecastScreen({super.key});
+  final WeatherForecast? locationWeather;
+  const WeatherForecastScreen({Key? key, this.locationWeather})
+      : super(key: key);
 
   @override
-  State<WeatherForecastScreen> createState() => _WeatherForecastScreenState();
+  _WeatherForecastScreenState createState() => _WeatherForecastScreenState();
 }
 
 class _WeatherForecastScreenState extends State<WeatherForecastScreen> {
   late Future<WeatherForecast> forecastObject;
-  String _cityName = 'Tomsk';
-  //String _cityName = '';
-
+  late String _cityName;
 
   @override
   void initState() {
     super.initState();
-    forecastObject = WeatherApi().fetchWeatherForecastWithCity(cityName: _cityName);
-   // forecastObject.then((weather) {
-   //   print(weather.list![0].weather![0].main);
-   // });
+
+    if (widget.locationWeather != null) {
+      forecastObject = Future.value(widget.locationWeather);
+    }
+
+    // forecastObject.then((weather) {
+    //   print(weather.list[0].weather[0].main);
+    // });
   }
 
   @override
@@ -36,57 +39,65 @@ class _WeatherForecastScreenState extends State<WeatherForecastScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black87,
-        title: Text('openweathermap.org', style: TextStyle(color: Colors.white),),
+        title: const Text('Weather forecast'),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         leading: IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.my_location, color: Colors.white,)
+          icon: const Icon(Icons.my_location),
+          onPressed: () {
+            setState(() {
+              forecastObject = WeatherApi().fetchWeatherForecast();
+            });
+          },
         ),
         actions: <Widget>[
           IconButton(
-              onPressed: () async {
-                var tappedName = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return CityScreen();
-                }));
-                if (tappedName != null) {
+            icon: const Icon(Icons.location_city),
+            onPressed: () async {
+              var tappedName = await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) {
+                    return const CityScreen();
+                  }));
+              if (tappedName != null) {
+                setState(() {
                   _cityName = tappedName;
-                  forecastObject = WeatherApi().fetchWeatherForecastWithCity(cityName: _cityName);
-                }
-              },
-              icon: Icon(Icons.location_city, color: Colors.white)
+                  forecastObject = WeatherApi()
+                      .fetchWeatherForecast(city: _cityName, isCity: true);
+                });
+              }
+            },
           ),
         ],
       ),
       body: ListView(
         children: <Widget>[
-          Container(
-            child: FutureBuilder<WeatherForecast>(
-                future: forecastObject,
-                builder: (context, snapshot) {
-                  if(snapshot.hasData) {
-                    return Column(
-                      children: <Widget>[
-                        SizedBox(height: 50),
-                        CityView(snapshot: snapshot),
-                        SizedBox(height: 50),
-                        TempView(snapshot: snapshot),
-                        SizedBox(height: 50),
-                        DetailView(snapshot: snapshot),
-                        SizedBox(height: 50),
-                        BottomListView(snapshot: snapshot),
-                      ],
-                    );
-                  } else {
-                    return const Center(
-                      child: SpinKitDoubleBounce(
-                        color: Colors.black87,
-                        size: 100,
-                      ),
-                    );
-                  }
-                },
-            ),
-          )
+          FutureBuilder<WeatherForecast>(
+            future: forecastObject,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                  children: <Widget>[
+                    const SizedBox(height: 50.0),
+                    CityView(snapshot: snapshot),
+                    const SizedBox(height: 50.0),
+                    TempView(snapshot: snapshot),
+                    const SizedBox(height: 50.0),
+                    DetailView(snapshot: snapshot),
+                    const SizedBox(height: 50.0),
+                    BottomListView(snapshot: snapshot),
+                  ],
+                );
+              } else {
+                return const Center(
+                  child: Text(
+                    'City not found\nPlease, enter correct city',
+                    style: TextStyle(fontSize: 25),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+            },
+          ),
         ],
       ),
     );
