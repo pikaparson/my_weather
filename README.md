@@ -1,3 +1,7 @@
+Я за полезные подарки) Дорогой Санта, вот тебе моя помощь:
+1) https://www.ozon.ru/product/yarnart-yarn-160-m-500-g-set-of-10acrylic-fabric-pink-1099712960/?from_sku=1099911276&oos_search=false
+2) две упаковки (чтобы хватило на изделие) https://www.ozon.ru/product/pryazha-astra-premium-molochnyy-hlopok-milk-cotton-letnyaya-41-kremovyy-50-g-100-m-3-sht-upak-317540794/?from_sku=317540794&oos_search=false
+3) две упаковки (чтобы хватило на изделие) https://www.ozon.ru/product/pryazha-dlya-vyazaniya-vyaz-detskaya-hlopkovaya-50-g-130-m-6-sht-upak-679-dzhinsovyy-1577379880/?from_sku=1577379133&oos_search=false
 # my_weather
 
 A new Flutter project.
